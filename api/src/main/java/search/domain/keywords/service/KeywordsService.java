@@ -6,6 +6,4 @@ import search.domain.keywords.dto.KeywordsDTO;
 public interface KeywordsService {
 
     List<KeywordsDTO> getRank();
-
-
 }

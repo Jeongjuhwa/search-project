@@ -28,9 +28,6 @@ public class KeywordsServiceImpl implements KeywordsService {
             String wordCount;
             if(redisService.isExist(k.getKeys())){
                 wordCount = redisService.get(k.getKeys());
-                //
-                Map<String,Long> map = redisService.get("wordCount*", Long.class);
-
             }else{
                 wordCount = String.valueOf(k.getWordCount());
                 redisService.set(k.getKeys(), k.getWordCount());

@@ -24,7 +24,7 @@ public class KeywordsScheduler {
     private final RedisService redisService;
     private final KeywordsRepository keywordsRepository;
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     @Transactional
     public void updateRedis() {
         log.info("batch start!!");

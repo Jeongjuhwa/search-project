@@ -15,8 +15,8 @@ import search.domain.keywords.dto.KeywordsDTO;
 public class KeywordsController {
     private final KeywordsService keywordsService;
 
-    @GetMapping()
-    public ResponseEntity<List<KeywordsDTO>> rank(){
+    @GetMapping("/rank")
+    public ResponseEntity<List<KeywordsDTO>> getRank(){
         return ResponseEntity.ok(keywordsService.getRank());
     }
 

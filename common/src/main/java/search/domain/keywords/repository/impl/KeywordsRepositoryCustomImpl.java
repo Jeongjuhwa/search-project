@@ -14,6 +14,8 @@ import search.domain.keywords.repository.KeywordsRepositoryCustom;
 public class KeywordsRepositoryCustomImpl extends QuerydslRepositorySupport implements
         KeywordsRepositoryCustom {
 
+    private static final long rankSize = 10L;
+
     public KeywordsRepositoryCustomImpl(){
         super(Keywords.class);
     }
@@ -22,8 +24,7 @@ public class KeywordsRepositoryCustomImpl extends QuerydslRepositorySupport impl
     public List<Keywords> findRankKeywords() {
         return from(keywords)
                 .orderBy(keywords.wordCount.desc())
-                .limit(10)
-                .offset(0)
+                .limit(rankSize)
                 .fetch();
     }
 
