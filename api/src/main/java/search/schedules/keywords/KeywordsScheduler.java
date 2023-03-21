@@ -1,4 +1,4 @@
-package search.schedules;
+package search.schedules.keywords;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,7 +19,7 @@ import search.support.RedisService;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class Schedules {
+public class KeywordsScheduler {
 
     private final RedisService redisService;
     private final KeywordsRepository keywordsRepository;
