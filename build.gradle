@@ -1,0 +1,43 @@
+buildscript {
+	ext {
+		springBootVersion = '2.7.9'
+	}
+	repositories{
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
+	}
+}
+
+subprojects {
+	group = 'search'
+	version = '0.0.1-SNAPSHOT'
+
+
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'java-library'
+
+	sourceCompatibility = '11'
+
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+
+		//lombok
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+		//gson
+		implementation "com.google.code.gson:gson:2.9.0"
+		implementation 'com.google.guava:guava:31.1-jre'
+
+		annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	}
+}
+
+
+

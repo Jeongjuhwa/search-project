@@ -1,0 +1,32 @@
+kakao:
+  domain: "https://dapi.kakao.com"
+  restApiKey: "KakaoAK 43f0bcb50a766f72ab8e5c2d7ea3925e"
+
+naver:
+  domain: "https://openapi.naver.com"
+  clientId: "i2IgTuiUntthtjqW1VE0"
+  clientSecret: "9h8amuild6"
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console  # H2 Console의 Path
+      settings:
+        web-allow-others: true  # 추가
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test  # H2 접속 정보
+    username: sa  # H2 접속 시 입력할 username 정보
+    password:  # H2 접속 시 입력할 password 정보
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    password:
+

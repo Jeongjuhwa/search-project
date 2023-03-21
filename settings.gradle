@@ -1,0 +1,5 @@
+rootProject.name = 'search-project'
+include 'api'
+include 'common'
+include 'module-api'
+
