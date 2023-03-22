@@ -11,3 +11,6 @@
 # 추가된 기능
 - package search.schedules.keywords.KeywordsScheduler
   - 레디스에 저장된 검색어 조회 카운트를 스케줄러를 통해 만개씩 끊어서 DB에 싱크맞춰주는 기능
+
+# Jar파일 위치
+- https://github.com/JungJuHwa/search-project/tree/master/api/build/libs
