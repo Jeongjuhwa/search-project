@@ -23,12 +23,13 @@ public class KeywordsScheduler {
 
     private final RedisService redisService;
     private final KeywordsRepository keywordsRepository;
+    private static final String wordCountPattern = "wordCount*";
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     @Transactional
-    public void updateRedis() {
+    public void syncWordCount() {
         List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
-        Set<String> keys = redisService.getKeys("wordCount*");
+        Set<String> keys = redisService.getKeys(wordCountPattern);
 
         Set<Long> ids = new HashSet<>();
 
@@ -36,13 +37,13 @@ public class KeywordsScheduler {
             long keywordId = Long.parseLong(s.split(":")[1]);
             ids.add(keywordId);
             if (ids.size() % 10000 == 0) {
-                completableFutures.add(update(ids));
+                completableFutures.add(updateWordCount(ids));
                 ids.clear();
             }
         });
 
         if (!ids.isEmpty()) {
-            completableFutures.add(update(ids));
+            completableFutures.add(updateWordCount(ids));
         }
 
         CompletableFuture.allOf(
@@ -52,7 +53,7 @@ public class KeywordsScheduler {
     }
 
     @Async("threadPoolTaskExecutor")
-    public CompletableFuture<Boolean> update(Set<Long> keywordsId) {
+    public CompletableFuture<Boolean> updateWordCount(Set<Long> keywordsId) {
         List<Keywords> keywords = keywordsRepository.findAllByIdIn(keywordsId);
         return CompletableFuture.supplyAsync(() -> {
             keywords.forEach(k -> {

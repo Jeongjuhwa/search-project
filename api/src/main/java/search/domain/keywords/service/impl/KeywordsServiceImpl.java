@@ -4,7 +4,6 @@ import search.domain.keywords.entity.mapper.KeywordsMapper;
 import search.domain.keywords.service.KeywordsService;
 import search.support.RedisService;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
