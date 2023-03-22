@@ -21,7 +21,7 @@ public class KeywordsRepositoryCustomImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public List<Keywords> findRankKeywords() {
+    public List<Keywords> findAllByRankSize() {
         return from(keywords)
                 .orderBy(keywords.wordCount.desc())
                 .limit(rankSize)

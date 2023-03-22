@@ -1,5 +1,6 @@
 package search.domain.keywords.service.impl;
 
+import search.domain.keywords.entity.mapper.KeywordsMapper;
 import search.domain.keywords.service.KeywordsService;
 import search.support.RedisService;
 import java.util.List;
@@ -20,19 +21,21 @@ public class KeywordsServiceImpl implements KeywordsService {
     private final KeywordsRepository keywordsRepository;
     private final RedisService redisService;
 
+    private final KeywordsMapper keywordsMapper;
+
     @Override
     public List<KeywordsDTO> getRank() {
 
-        List<Keywords> rankKeywords = keywordsRepository.findRankKeywords();
+        List<Keywords> rankKeywords = keywordsRepository.findAllByRankSize();
         return rankKeywords.stream().map(k -> {
             String wordCount;
-            if(redisService.isExist(k.getKeys())){
-                wordCount = redisService.get(k.getKeys());
+            if(redisService.isExist(k.getRedisCountKey())){
+                wordCount = redisService.get(k.getRedisCountKey());
             }else{
                 wordCount = String.valueOf(k.getWordCount());
-                redisService.set(k.getKeys(), k.getWordCount());
+                redisService.set(k.getRedisCountKey(), k.getWordCount());
             }
-            return KeywordsDTO.of(k.getId(), k.getWord(), wordCount);
+            return keywordsMapper.asDTOWithLiveCount(k, wordCount);
         }).collect(
                 Collectors.toList());
     }

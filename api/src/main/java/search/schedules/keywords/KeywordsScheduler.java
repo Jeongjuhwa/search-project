@@ -24,7 +24,7 @@ public class KeywordsScheduler {
     private final RedisService redisService;
     private final KeywordsRepository keywordsRepository;
 
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     @Transactional
     public void updateRedis() {
         List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
@@ -56,9 +56,9 @@ public class KeywordsScheduler {
         List<Keywords> keywords = keywordsRepository.findAllByIdIn(keywordsId);
         return CompletableFuture.supplyAsync(() -> {
             keywords.forEach(k -> {
-                long count = Long.parseLong(redisService.get(k.getKeys()));
+                long count = Long.parseLong(redisService.get(k.getRedisCountKey()));
                 k.updateWordCount(count);
-                redisService.remove(k.getKeys());
+                redisService.remove(k.getRedisCountKey());
             });
             return null;
         });

@@ -10,4 +10,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface KeywordsMapper extends GenericMapper<KeywordsDTO, Keywords> {
 
+    default KeywordsDTO asDTOWithLiveCount(Keywords keywords, String wordCount){
+        return KeywordsDTO.of(keywords.getId(), keywords.getWord(), wordCount);
+    }
+
 }

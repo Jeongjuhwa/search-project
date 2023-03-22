@@ -6,3 +6,9 @@ CREATE TABLE IF NOT EXISTS keywords
     PRIMARY KEY (id)
     );
 
+
+create unique index keywords_uindex
+    on keywords (word);
+
+
+
