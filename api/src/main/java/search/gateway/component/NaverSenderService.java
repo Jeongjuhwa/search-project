@@ -3,6 +3,7 @@ package search.gateway.component;
 import search.gateway.controller.v1.response.SearchApiResponse;
 import search.gateway.controller.v1.response.NaverBlogSearchResponse;
 import search.gateway.utils.NaverUrlBuilder;
+import search.response.PagingResponse;
 import search.support.GsonHelper;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import search.enums.SortType;
-import search.exception.ApiException;
-import search.exception.ErrorCode;
 
 @Component
 @RequiredArgsConstructor
@@ -40,17 +39,13 @@ public class NaverSenderService implements SearchSenderService {
     private final RestTemplate restTemplate;
 
     @Override
-    public SearchApiResponse getBlog(String query, SortType sortType, Integer page, Integer size) {
+    public PagingResponse<SearchApiResponse> getBlog(String query, SortType sortType, Integer page, Integer size) {
         URI blogUrl = NaverUrlBuilder.getBlogUrl(naverSearchDomain, query, sortType, page, size);
-        SearchApiResponse searchApiResponse;
+        PagingResponse<SearchApiResponse> searchApiResponse;
 
         NaverBlogSearchResponse response = send(blogUrl, NaverBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultNaverHeaders()));
         response.validate();
-        searchApiResponse = response.convertToSearchApiResponse();
-
-
-
-
+        searchApiResponse = PagingResponse.of(response.getTotal(),page, size, response.convertToSearchApiResponse());
         return searchApiResponse;
     }
     private <T> T send(URI requestUrl, Type responseType, HttpMethod httpMethod, HttpEntity entity){

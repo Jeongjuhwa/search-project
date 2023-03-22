@@ -3,7 +3,6 @@ package search.gateway.controller.v1.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import search.gateway.controller.v1.response.SearchApiResponse.Data;
 
 
 @Getter
@@ -12,12 +11,16 @@ public class KaKaoBlogSearchResponse {
     private Meta meta;
     private List<Documents> documents;
 
-    public SearchApiResponse convertToSearchApiResponse() {
-        List<Data> dataList = documents.stream()
-                .map(d -> Data.of(d.getTitle(), d.getContents(), d.getUrl(), d.getBlogname(),
+    public long getTotalElements(){
+        return this.meta.pageable_count;
+    }
+
+    public List<SearchApiResponse> convertToSearchApiResponse() {
+        return documents.stream()
+                .map(d -> SearchApiResponse.of(d.getTitle(), d.getContents(), d.getUrl(), d.getBlogname(),
                         d.datetime)).collect(
                         Collectors.toList());
-        return SearchApiResponse.of(meta.getPageable_count(), dataList);
+
     }
 
 

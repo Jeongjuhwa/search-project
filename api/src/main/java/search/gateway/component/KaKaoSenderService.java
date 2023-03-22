@@ -2,6 +2,7 @@ package search.gateway.component;
 
 import search.gateway.controller.v1.response.KaKaoBlogSearchResponse;
 import search.gateway.utils.KaKaoUrlBuilder;
+import search.response.PagingResponse;
 import search.support.GsonHelper;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -36,12 +37,12 @@ public class KaKaoSenderService implements SearchSenderService{
     private final NaverSenderService naverSenderService;
 
     @Override
-    public SearchApiResponse getBlog(String query, SortType sortType, Integer page, Integer size) {
+    public PagingResponse<SearchApiResponse> getBlog(String query, SortType sortType, Integer page, Integer size) {
         URI blogUrl = KaKaoUrlBuilder.getBlogUrl(kakaoSearchDomain, query, sortType, page, size);
-        SearchApiResponse searchApiResponse;
+        PagingResponse<SearchApiResponse> searchApiResponse;
         try {
             KaKaoBlogSearchResponse response = send(blogUrl, KaKaoBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultKaKaoHeaders()));
-            searchApiResponse = response.convertToSearchApiResponse();
+            searchApiResponse = PagingResponse.of(response.getTotalElements(), page, size, response.convertToSearchApiResponse());
         }catch (Exception e){
             log.info("카카오 블로그 검색 실패: "+ e.getMessage());
             searchApiResponse = naverSenderService.getBlog(query,sortType,page,size);

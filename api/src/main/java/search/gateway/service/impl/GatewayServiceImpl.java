@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import search.gateway.service.GatewayService;
 import search.enums.ExternalName;
 import search.enums.SortType;
+import search.response.PagingResponse;
 
 @Service
 @Transactional
@@ -24,7 +25,7 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Override
     @Transactional(readOnly = true)
-    public SearchApiResponse getBlog(String query, SortType sortType, ExternalName externalName, Integer page,
+    public PagingResponse<SearchApiResponse> getBlog(String query, SortType sortType, ExternalName externalName, Integer page,
             Integer size) {
 
         SearchSenderService searchSenderService = externalSearchChannelSelector.select(externalName);

@@ -10,6 +10,7 @@ import search.gateway.controller.v1.response.SearchApiResponse;
 import search.gateway.service.GatewayService;
 import search.enums.ExternalName;
 import search.enums.SortType;
+import search.response.PagingResponse;
 
 @RestController
 @RequestMapping("/api/v1/gateway")
@@ -18,7 +19,7 @@ public class GatewayController {
     private final GatewayService gatewayService;
 
     @GetMapping(value = "/blog")
-    public ResponseEntity<SearchApiResponse> getBlog(
+    public ResponseEntity<PagingResponse<SearchApiResponse>> getBlog(
             @RequestParam String query,
             @RequestParam(required = false, defaultValue = "ACCURACY") SortType sortType,
             @RequestParam(required = false, defaultValue = "KAKAO") ExternalName externalName,

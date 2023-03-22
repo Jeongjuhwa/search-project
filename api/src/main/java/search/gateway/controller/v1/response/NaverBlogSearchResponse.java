@@ -7,7 +7,7 @@ import lombok.Getter;
 import search.enums.NaverErrorCode;
 import search.exception.ApiException;
 import search.exception.ErrorCode;
-import search.gateway.controller.v1.response.SearchApiResponse.Data;
+
 
 
 @Getter
@@ -20,12 +20,12 @@ public class NaverBlogSearchResponse {
     private Integer display;
     private List<Items> items;
 
-    public SearchApiResponse convertToSearchApiResponse() {
-        List<Data> dataList = items.stream()
-                .map(i -> Data.of(i.getTitle(), i.getDescription(), i.getLink(), i.bloggername,
+    public List<SearchApiResponse> convertToSearchApiResponse() {
+        return items.stream()
+                .map(i -> SearchApiResponse.of(i.getTitle(), i.getDescription(), i.getLink(),
+                        i.bloggername,
                         i.postdate)).collect(
                         Collectors.toList());
-        return SearchApiResponse.of(total, dataList);
     }
 
     public void validate() {
