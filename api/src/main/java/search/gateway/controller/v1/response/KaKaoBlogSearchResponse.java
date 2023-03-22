@@ -15,9 +15,9 @@ public class KaKaoBlogSearchResponse {
         return this.meta.pageable_count;
     }
 
-    public List<SearchApiResponse> convertToSearchApiResponse() {
+    public List<BlogResponse> convertToSearchApiResponse() {
         return documents.stream()
-                .map(d -> SearchApiResponse.of(d.getTitle(), d.getContents(), d.getUrl(), d.getBlogname(),
+                .map(d -> BlogResponse.of(d.getTitle(), d.getContents(), d.getUrl(), d.getBlogname(),
                         d.datetime)).collect(
                         Collectors.toList());
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import search.gateway.controller.v1.response.SearchApiResponse;
+import search.gateway.controller.v1.response.BlogResponse;
 import search.gateway.service.GatewayService;
 import search.enums.ExternalName;
 import search.enums.SortType;
@@ -19,7 +19,7 @@ public class GatewayController {
     private final GatewayService gatewayService;
 
     @GetMapping(value = "/blog")
-    public ResponseEntity<PagingResponse<SearchApiResponse>> getBlog(
+    public ResponseEntity<PagingResponse<BlogResponse>> getBlog(
             @RequestParam String query,
             @RequestParam(required = false, defaultValue = "ACCURACY") SortType sortType,
             @RequestParam(required = false, defaultValue = "KAKAO") ExternalName externalName,

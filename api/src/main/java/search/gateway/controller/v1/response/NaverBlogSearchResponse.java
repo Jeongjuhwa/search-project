@@ -20,9 +20,9 @@ public class NaverBlogSearchResponse {
     private Integer display;
     private List<Items> items;
 
-    public List<SearchApiResponse> convertToSearchApiResponse() {
+    public List<BlogResponse> convertToSearchApiResponse() {
         return items.stream()
-                .map(i -> SearchApiResponse.of(i.getTitle(), i.getDescription(), i.getLink(),
+                .map(i -> BlogResponse.of(i.getTitle(), i.getDescription(), i.getLink(),
                         i.bloggername,
                         i.postdate)).collect(
                         Collectors.toList());

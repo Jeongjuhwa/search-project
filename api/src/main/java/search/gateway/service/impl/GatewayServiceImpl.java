@@ -1,8 +1,8 @@
 package search.gateway.service.impl;
 
-import search.gateway.component.ExternalSearchChannelSelector;
-import search.gateway.component.SearchSenderService;
-import search.gateway.controller.v1.response.SearchApiResponse;
+import search.gateway.component.RestApiSenderSelector;
+import search.gateway.component.RestApiSender;
+import search.gateway.controller.v1.response.BlogResponse;
 import search.gateway.event.BlogSelectedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +20,19 @@ import search.response.PagingResponse;
 @RequiredArgsConstructor
 public class GatewayServiceImpl implements GatewayService {
 
-    private final ExternalSearchChannelSelector externalSearchChannelSelector;
+    private final RestApiSenderSelector restApiSenderSelector;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional(readOnly = true)
-    public PagingResponse<SearchApiResponse> getBlog(String query, SortType sortType, ExternalName externalName, Integer page,
+    public PagingResponse<BlogResponse> getBlog(String query, SortType sortType, ExternalName externalName, Integer page,
             Integer size) {
 
-        SearchSenderService searchSenderService = externalSearchChannelSelector.select(externalName);
+        RestApiSender restApiSender = restApiSenderSelector.select(externalName);
 
         applicationEventPublisher.publishEvent(new BlogSelectedEvent(query));
 
-        return searchSenderService.getBlog(query, sortType, page, size);
+        return restApiSender.getBlog(query, sortType, page, size);
     }
 
 }
