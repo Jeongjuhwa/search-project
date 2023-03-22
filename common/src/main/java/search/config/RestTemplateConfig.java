@@ -29,7 +29,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -47,105 +49,13 @@ public class RestTemplateConfig {
     private final Integer connectionTimeout = 10000;
 
     @Bean
-    @Order(-1)
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder, HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory) {
-        return restTemplateBuilder.requestFactory(() -> httpComponentsClientHttpRequestFactory).build();
-    }
-
-    @Bean
-    @Order(-1)
-    public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
-        return configurer.configure(new RestTemplateBuilder()).messageConverters(getMessageConverters())
-                .setConnectTimeout(Duration.ofMillis(connectionTimeout)).setReadTimeout(Duration.ofMillis(readTimeout)).errorHandler(new RestTemplateResponseErrorHandler());
-    }
-
-    @Bean
-    @Order(-1)
-    public HttpComponentsClientHttpRequestFactory clientHttpRequestFactory(final CloseableHttpClient httpClient) {
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        clientHttpRequestFactory.setHttpClient(httpClient);
-        clientHttpRequestFactory.setConnectionRequestTimeout(readTimeout);
-        return clientHttpRequestFactory;
-    }
-
-    @Bean
-    @Order(-1)
-    public CloseableHttpClient httpClient(final PoolingHttpClientConnectionManager connManager, final RequestConfig requestConfig) {
-        return HttpClients.custom()
-                .setConnectionManager(connManager)
-                .evictIdleConnections(3L, TimeUnit.SECONDS)
-                .setDefaultRequestConfig(requestConfig)
-                .setKeepAliveStrategy(new ConnectionKeepAliveStrategy() {
-                    @Override
-                    public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-
-                        HeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator(
-                                HTTP.CONN_KEEP_ALIVE));
-                        while (it.hasNext()) {
-                            HeaderElement he = it.nextElement();
-                            String param = he.getName();
-                            String value = he.getValue();
-                            if (value != null && "timeout".equalsIgnoreCase(param)) {
-                                try {
-                                    return Long.parseLong(value) * 1000;
-                                } catch (NumberFormatException ignore) {
-                                }
-                            }
-                        }
-                        return KEEP_ALIVE_DURATION;
-                    }
-                })
-                .disableCookieManagement()
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
+                .setConnectTimeout(Duration.ofMillis(connectionTimeout)) // connection-timeout
+                .setReadTimeout(Duration.ofMillis(readTimeout)) // read-timeout
+                .additionalMessageConverters(new StringHttpMessageConverter())
+                .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }
-
-    @Bean
-    @Order(-1)
-    public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("https", SSLConnectionSocketFactory.getSocketFactory())
-                .register("http", PlainConnectionSocketFactory.getSocketFactory()).build();
-
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-        connectionManager.setMaxTotal(maxTotal);
-        connectionManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
-        connectionManager.closeIdleConnections(3000L, TimeUnit.MILLISECONDS);
-        connectionManager.setDefaultSocketConfig(SocketConfig.custom()
-                .setTcpNoDelay(true)
-                .setSoKeepAlive(true)
-                .setSoLinger(200)
-                .setSoReuseAddress(true)
-                .setSoTimeout(readTimeout)
-                .build()
-        );
-        return connectionManager;
-    }
-
-    @Bean
-    @Order(-1)
-    public RequestConfig requestConfig() {
-        return RequestConfig.custom()
-                .setConnectTimeout(connectionTimeout)
-                .setConnectionRequestTimeout(connectionTimeout)
-                .setSocketTimeout(readTimeout)
-                .build();
-    }
-
-    private List<HttpMessageConverter<?>> getMessageConverters() {
-        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-        StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(
-                StandardCharsets.UTF_8);
-        stringHttpMessageConverter.setWriteAcceptCharset(false);
-        messageConverters.add(stringHttpMessageConverter);
-        // org.springframework.util.LinkedMultiValueMap 관련 처리
-        FormHttpMessageConverter converter = new FormHttpMessageConverter();
-        converter.setSupportedMediaTypes(List.of(
-                MediaType.APPLICATION_FORM_URLENCODED // 카페24
-                , MediaType.MULTIPART_FORM_DATA // 카카오
-                , MediaType.APPLICATION_JSON
-        ));
-        messageConverters.add(converter);
-        return messageConverters;
-    }
-
 }
