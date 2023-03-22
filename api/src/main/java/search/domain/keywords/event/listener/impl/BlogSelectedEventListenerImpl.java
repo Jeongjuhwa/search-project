@@ -26,7 +26,7 @@ public class BlogSelectedEventListenerImpl implements BlogSelectedEventListener 
         if(redisService.isExist(keywords.getRedisCountKey())){
             redisService.increment(keywords.getRedisCountKey());
         }else {
-            redisService.set(keywords.getRedisCountKey(), keywords.getWordCount()+1);
+            redisService.set(keywords.getRedisCountKey(), keywords.getWordCount());
         }
 
     }

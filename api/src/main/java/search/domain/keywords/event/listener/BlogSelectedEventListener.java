@@ -10,7 +10,6 @@ import search.gateway.event.BlogSelectedEvent;
 public interface BlogSelectedEventListener {
     @TransactionalEventListener
     @Async("threadPoolTaskExecutor")
-    @Transactional
     void handleBlogSelectedEvent(BlogSelectedEvent event);
 
 }

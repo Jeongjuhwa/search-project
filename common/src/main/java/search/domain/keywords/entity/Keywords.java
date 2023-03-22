@@ -27,7 +27,7 @@ public class Keywords {
     public static Keywords ofDefault(String query) {
         Keywords instance = new Keywords();
         instance.word = query;
-        instance.wordCount = 0L;
+        instance.wordCount = 1L;
         return instance;
     }
 
