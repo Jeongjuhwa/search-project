@@ -32,7 +32,7 @@ public class ExternalSearchChannelSelector {
 
     public SearchSenderService select(ExternalName externalName){
         return Optional.ofNullable(EXTERNAL_SEARCH_MAP.get(externalName)).orElseThrow(() -> ApiException.of(
-                ErrorCode.INTERNAL_SERVER_ERROR));
+                ErrorCode.NOT_FOUND_CHANNEL));
     }
 
 }

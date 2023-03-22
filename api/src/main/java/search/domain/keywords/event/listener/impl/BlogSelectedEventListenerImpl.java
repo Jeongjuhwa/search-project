@@ -23,7 +23,6 @@ public class BlogSelectedEventListenerImpl implements BlogSelectedEventListener 
         String query = event.getQuery();
         Keywords keywords = keywordsRepository.findByWord(query)
                 .orElseGet(() -> keywordsRepository.save(Keywords.ofDefault(query)));
-
         if(redisService.isExist(keywords.getKeys())){
             redisService.increment(keywords.getKeys());
         }else {

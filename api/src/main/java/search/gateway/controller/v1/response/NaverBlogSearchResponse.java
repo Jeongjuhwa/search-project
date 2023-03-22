@@ -38,7 +38,7 @@ public class NaverBlogSearchResponse {
                 case SE06:
                     throw ApiException.of(ErrorCode.BAD_REQUEST, errorCode.getMessage());
                 case SE05:
-                    throw ApiException.of(ErrorCode.NOT_FOUNT, errorCode.getMessage());
+                    throw ApiException.of(ErrorCode.NOT_FOUND, errorCode.getMessage());
                 default:
                     throw ApiException.of(ErrorCode.INTERNAL_SERVER_ERROR);
             }
