@@ -1,10 +1,13 @@
 package search.config;
 
+import com.google.common.collect.Lists;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpResponse;
@@ -40,6 +43,7 @@ import search.exception.RestTemplateResponseErrorHandler;
 
 
 @Configuration
+@RequiredArgsConstructor
 public class RestTemplateConfig {
 
     private final int KEEP_ALIVE_DURATION = 2 * 1000;
@@ -48,14 +52,23 @@ public class RestTemplateConfig {
     private final Integer readTimeout = 300000;
     private final Integer connectionTimeout = 10000;
 
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
-                .setConnectTimeout(Duration.ofMillis(connectionTimeout)) // connection-timeout
-                .setReadTimeout(Duration.ofMillis(readTimeout)) // read-timeout
-                .additionalMessageConverters(new StringHttpMessageConverter())
-                .errorHandler(new RestTemplateResponseErrorHandler())
-                .build();
+        return restTemplateBuilder.requestFactory(HttpComponentsClientHttpRequestFactory::new).build();
     }
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
+        return configurer.configure(new RestTemplateBuilder()).messageConverters(getMessageConverters())
+                .setConnectTimeout(Duration.ofMillis(connectionTimeout)).setReadTimeout(Duration.ofMillis(readTimeout));
+    }
+
+    private List<HttpMessageConverter<?>> getMessageConverters() {
+        List<HttpMessageConverter<?>> messageConverters = Lists.newArrayList();
+        StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+        stringHttpMessageConverter.setWriteAcceptCharset(false);
+        messageConverters.add(stringHttpMessageConverter);
+        return messageConverters;
+    }
+
 }
