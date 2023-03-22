@@ -44,12 +44,12 @@ public class NaverSenderService implements SearchSenderService {
         URI blogUrl = NaverUrlBuilder.getBlogUrl(naverSearchDomain, query, sortType, page, size);
         SearchApiResponse searchApiResponse;
 
-        try {
-            NaverBlogSearchResponse response = send(blogUrl, NaverBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultNaverHeaders()));
-            searchApiResponse = response.convertToSearchApiResponse();
-        } catch (Exception e){
-            throw ApiException.of(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+        NaverBlogSearchResponse response = send(blogUrl, NaverBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultNaverHeaders()));
+        response.validate();
+        searchApiResponse = response.convertToSearchApiResponse();
+
+
+
 
         return searchApiResponse;
     }

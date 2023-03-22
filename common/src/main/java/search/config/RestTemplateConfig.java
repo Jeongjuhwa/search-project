@@ -34,6 +34,7 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import search.exception.RestTemplateResponseErrorHandler;
 
 
 @Configuration
@@ -55,7 +56,7 @@ public class RestTemplateConfig {
     @Order(-1)
     public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
         return configurer.configure(new RestTemplateBuilder()).messageConverters(getMessageConverters())
-                .setConnectTimeout(Duration.ofMillis(connectionTimeout)).setReadTimeout(Duration.ofMillis(readTimeout));
+                .setConnectTimeout(Duration.ofMillis(connectionTimeout)).setReadTimeout(Duration.ofMillis(readTimeout)).errorHandler(new RestTemplateResponseErrorHandler());
     }
 
     @Bean
