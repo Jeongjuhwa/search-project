@@ -42,6 +42,7 @@ public class KaKaoSenderService extends RestTemplateAbstractClass implements Sea
             KaKaoBlogSearchResponse response = send(blogUrl, KaKaoBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultHeaders()));
             searchApiResponse = PagingResponse.of(response.getTotalElements(), page, size, response.convertToSearchApiResponse());
         }catch (Exception e){
+            //웹훅
             log.info("카카오 블로그 검색 실패: "+ e.getMessage());
             searchApiResponse = naverSenderService.getBlog(query,sortType,page,size);
         }
