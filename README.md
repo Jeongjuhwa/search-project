@@ -2,7 +2,7 @@
 외부(오픈) API를 연동하여 블로그 검색 프로젝트
 
 # 기술스택
-- java11, springboot, jpa
+- java11(zulu-11), springboot, jpa
 - db: h2, redis
 # 주의사항
 - h2-console 접속시, jdbc url -> jdbc:h2:mem:test 로 변경 필요
