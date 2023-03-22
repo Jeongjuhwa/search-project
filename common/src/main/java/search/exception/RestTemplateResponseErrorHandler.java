@@ -21,6 +21,6 @@ public class RestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse httpResponse) throws IOException {
-
+        // 그냥 패스하도록
     }
 }

@@ -19,7 +19,6 @@ public class KeywordsServiceImpl implements KeywordsService {
 
     private final KeywordsRepository keywordsRepository;
     private final RedisService redisService;
-
     private final KeywordsMapper keywordsMapper;
 
     @Override

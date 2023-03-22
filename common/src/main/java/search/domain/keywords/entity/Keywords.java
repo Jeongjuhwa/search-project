@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import search.support.Constant;
 
 @Entity
 @Getter
@@ -31,8 +32,9 @@ public class Keywords {
         return instance;
     }
 
+
     public String getRedisCountKey() {
-        return Joiner.on(":").join("wordCount", getId());
+        return Joiner.on(":").join(Constant.REDIS_WORD_COUNT_PREFIX, getId());
     }
 
     public void updateWordCount(long count) {

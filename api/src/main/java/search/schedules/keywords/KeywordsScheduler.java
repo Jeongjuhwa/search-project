@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import search.domain.keywords.entity.Keywords;
 import search.domain.keywords.repository.KeywordsRepository;
+import search.support.Constant;
 import search.support.RedisService;
 
 @Component
@@ -23,13 +24,12 @@ public class KeywordsScheduler {
 
     private final RedisService redisService;
     private final KeywordsRepository keywordsRepository;
-    private static final String wordCountPattern = "wordCount*";
 
     @Scheduled(cron = "0 0/2 * * * ?")
     @Transactional
     public void syncWordCount() {
         List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
-        Set<String> keys = redisService.getKeys(wordCountPattern);
+        Set<String> keys = redisService.getKeys(Constant.WORD_COUNT_PATTERN);
 
         Set<Long> ids = new HashSet<>();
 
