@@ -27,8 +27,6 @@ public class KeywordsScheduler {
     @Scheduled(cron = "0 0/3 * * * ?")
     @Transactional
     public void updateRedis() {
-        log.info("batch start!!");
-
         List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
         Set<String> keys = redisService.getKeys("wordCount*");
 
