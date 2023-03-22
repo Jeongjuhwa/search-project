@@ -31,7 +31,7 @@ public class Keywords {
         return instance;
     }
 
-    public String getKeys() {
+    public String getRedisCountKey() {
         return Joiner.on(":").join("wordCount", getId());
     }
 
