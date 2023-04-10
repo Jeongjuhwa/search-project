@@ -1,5 +1,6 @@
 package search.gateway.component;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import search.gateway.controller.v1.response.KaKaoBlogSearchResponse;
 import search.gateway.utils.KaKaoUrlBuilder;
 import search.response.PagingResponse;
@@ -35,19 +36,20 @@ public class KaKaoRestApiSender extends RestApiSenderSupporter implements RestAp
     }
 
     @Override
+    @CircuitBreaker(name = "circuit-test", fallbackMethod = "fallbackGetBlog")
     public PagingResponse<BlogResponse> getBlog(String query, SortType sortType, Integer page, Integer size) {
         URI blogUrl = KaKaoUrlBuilder.getBlogUrl(kakaoSearchDomain, query, sortType, page, size);
         PagingResponse<BlogResponse> blogResponse;
-        try {
-            KaKaoBlogSearchResponse response = send(blogUrl, KaKaoBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultHeaders()));
-            blogResponse = PagingResponse.of(response.getTotalElements(), page, size, response.convertToSearchApiResponse());
-        }catch (Exception e){
-            //웹훅
-            log.info("카카오 블로그 검색 실패: "+ e.getMessage());
-            blogResponse = naverRestApiSender.getBlog(query,sortType,page,size);
-        }
+
+        KaKaoBlogSearchResponse response = send(blogUrl, KaKaoBlogSearchResponse.class, HttpMethod.GET, new HttpEntity<>(defaultHeaders()));
+        blogResponse = PagingResponse.of(response.getTotalElements(), page, size, response.convertToSearchApiResponse());
 
         return blogResponse;
+    }
+
+    private PagingResponse<BlogResponse> fallbackGetBlog(String query, SortType sortType, Integer page, Integer size, Throwable throwable){
+        log.info(throwable.getMessage());
+        return naverRestApiSender.getBlog(query, sortType, page, size);
     }
 
     @Override

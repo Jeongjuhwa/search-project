@@ -1,6 +1,6 @@
 kakao:
   domain: "https://dapi.kakao.com"
-  restApiKey: "KakaoAK 43f0bcb50a766f72ab8e5c2d7ea3925e"
+  restApiKey: "KakaoAK 43f0bcb50a766f72ab8e5c2d7ea3925ez"
 
 naver:
   domain: "https://openapi.naver.com"
@@ -30,3 +30,35 @@ spring:
     port: 6379
     password:
 
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default: # 기본 config 명
+        registerHealthIndicator: true
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 10
+        minimum-number-of-calls: 2  # 최소한 호출을 10번을 기록해야 실패 비율을 계산할 수 있다.
+        slowCallRateThreshold: 100
+        slowCallDurationThreshold: 60000
+        failure-rate-threshold: 50
+        permittedNumberOfCallsInHalfOpenState: 10
+        waitDurationInOpenState: 10s  # 서킷의 상태가 Open 에서 Half-open 으로 변경되기전에 Circuit Break가 기다리는 시간 [s]
+    instances:
+      circuit-test: # circuitbreaker name
+        baseConfig: default # 기본 config 지정 (Ex-circuitbreaker.configs.{default})
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*" # 테스트를 위해 actuator 전체 노출
+  health:
+    circuitbreakers:
+      enabled: true # circuitbreakers 정보 노출
+    retryevents:
+      enabled: true # retryevents 정보 노출
