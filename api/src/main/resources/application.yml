@@ -1,6 +1,6 @@
 kakao:
   domain: "https://dapi.kakao.com"
-  restApiKey: "KakaoAK 43f0bcb50a766f72ab8e5c2d7ea3925ez"
+  restApiKey: "KakaoAK 43f0bcb50a766f72ab8e5c2d7ea3925e"
 
 naver:
   domain: "https://openapi.naver.com"
