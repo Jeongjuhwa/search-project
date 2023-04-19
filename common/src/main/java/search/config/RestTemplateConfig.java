@@ -18,8 +18,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @RequiredArgsConstructor
 public class RestTemplateConfig {
-    private final Integer readTimeout = 300000;
-    private final Integer connectionTimeout = 10000;
+    private static final Integer READ_TIME_OUT = 300000;
+    private static final Integer CONNECTION_TIME_OUT = 10000;
 
 
     @Bean
@@ -29,7 +29,7 @@ public class RestTemplateConfig {
     @Bean
     public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
         return configurer.configure(new RestTemplateBuilder()).messageConverters(getMessageConverters())
-                .setConnectTimeout(Duration.ofMillis(connectionTimeout)).setReadTimeout(Duration.ofMillis(readTimeout));
+                .setConnectTimeout(Duration.ofMillis(CONNECTION_TIME_OUT)).setReadTimeout(Duration.ofMillis(READ_TIME_OUT));
     }
 
     private List<HttpMessageConverter<?>> getMessageConverters() {

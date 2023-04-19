@@ -8,6 +8,7 @@ buildscript {
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 		classpath "io.spring.gradle:dependency-management-plugin:1.0.15.RELEASE"
+		classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.0"
 	}
 }
 
@@ -20,6 +21,8 @@ subprojects {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'java-library'
+	apply plugin: 'org.sonarqube'
+	apply plugin: 'jacoco'
 
 	sourceCompatibility = '11'
 
@@ -39,6 +42,44 @@ subprojects {
 		implementation 'com.google.guava:guava:31.1-jre'
 
 		annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	}
+
+	configurations {
+		compileOnly {
+			extendsFrom annotationProcessor
+		}
+	}
+
+	test {
+		useJUnitPlatform()
+		finalizedBy 'jacocoTestReport'
+	}
+
+	jacoco {
+		toolVersion = "0.8.7"
+	}
+
+	jacocoTestReport {
+		reports {
+			xml.enabled true
+			csv.enabled false
+			html.enabled false
+		}
+	}
+
+	sonarqube {
+		properties {
+			property "sonar.host.url", "http://localhost:80"
+			property "sonar.login", "squ_9f7a519d4bad27c3cd2eb19a48b777d9505850d9"
+			property "sonar.projectKey", "test"
+			property "sonar.projectName", "test"
+			property "sonar.sources", "src"
+			property "sonar.language", "java"
+			property "sonar.sourceEncoding", "UTF-8"
+			property "sonar.profile", "Sonar way"
+			property "sonar.test.inclusions", "**/*Test.java"
+			property 'sonar.coverage.jacoco.xmlReportPaths', "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		}
 	}
 }
 
