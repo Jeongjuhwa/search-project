@@ -11,6 +11,7 @@ public enum ErrorCode {
 
     NOT_FOUND(HttpStatus.NOT_FOUND, "존재 하지 않는 요청입니다."),
     NOT_FOUND_CHANNEL(HttpStatus.NOT_FOUND, "요청하려는 채널이 연동되어있지 않습니다."),
+    NOT_FOUND_TEAM(HttpStatus.NOT_FOUND, "존재하지 않는 팀입니다."),
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버오류 발생"),
 
