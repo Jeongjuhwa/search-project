@@ -26,6 +26,12 @@ dependencies {
     implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
     implementation 'io.github.resilience4j:resilience4j-circuitbreaker:1.7.0'
 
+
+    // Selenium WebDriver
+    implementation 'org.seleniumhq.selenium:selenium-java:4.1.0'
+    // Selenium WebDriver Chrome Driver
+    implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.1.0'
+
 }
 
 test {
